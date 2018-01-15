@@ -55,8 +55,10 @@ namespace port {
 
 // Mac OS
 #elif defined(__APPLE__)
+#include <atomic>
 inline void MemoryBarrier() {
-  OSMemoryBarrier();
+    std::atomic_thread_fence(std::memory_order_acq_rel);
+//  OSMemoryBarrier();
 }
 #define LEVELDB_HAVE_MEMORY_BARRIER
 
