@@ -11,6 +11,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef _MSC_VER
+# include <windows.h>
+#endif
+
 const char* phase = "";
 static char dbname[200];
 
@@ -20,10 +24,26 @@ static void StartPhase(const char* name) {
 }
 
 static const char* GetTempDir(void) {
-    const char* ret = getenv("TEST_TMPDIR");
-    if (ret == NULL || ret[0] == '\0')
-        ret = "/tmp";
-    return ret;
+#ifdef _MSC_VER
+  static char buf[MAX_PATH + 1];
+  DWORD len = GetEnvironmentVariableA("TEST_TMPDIR", buf, sizeof(buf));
+  if ((0 == len) || (len > sizeof(buf))) {
+    len = GetTempPathA(sizeof(buf) + 1, buf);
+    if (0 == len) {
+      fprintf(stderr, "GetTempPathA() failed!\n");
+      abort();
+    }
+    if (('\\' == buf[len - 1]) || ('/' == buf[len - 1])) {
+      buf[--len] = '\0';
+    }
+  }
+  return buf;
+#else  // _MSC_VER
+  const char* ret = getenv("TEST_TMPDIR");
+  if (ret == NULL || ret[0] == '\0')
+      ret = "/tmp";
+  return ret;
+#endif // _MSC_VER
 }
 
 #define CheckNoError(err)                                               \

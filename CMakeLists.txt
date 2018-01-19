@@ -8,14 +8,21 @@ if (MSVC)
     add_definitions(-DNOMINMAX)
 endif()
 
-if (WIN32)
-else(WIN32)
+if (MSVC)
+    add_definitions(-DLEVELDB_PLATFORM_MSVC=1)
+    set(LEVELDB_PORT_SOURCES
+        port/port_msvc.cc
+        util/env_msvc.cc
+        )
+    include_directories(port/win)
+else(MSVC)
     add_definitions(-DLEVELDB_PLATFORM_POSIX=1)
     link_libraries(pthread)
     set(LEVELDB_PORT_SOURCES
         port/port_posix.cc
+        util/env_posix.cc
         )
-endif(WIN32)
+endif(MSVC)
 
 include_directories(./ include)
 
@@ -56,7 +63,6 @@ add_library(${PROJECT_NAME} STATIC
     util/comparator.cc
     util/crc32c.cc
     util/env.cc
-    util/env_posix.cc
     util/filter_policy.cc
     util/hash.cc
     util/histogram.cc
