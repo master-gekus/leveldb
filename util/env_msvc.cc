@@ -413,11 +413,13 @@ class WindowsLockTable {
 class WindowsEnv : public Env {
  public:
   WindowsEnv();
+#pragma warning(disable: 4722)
   virtual ~WindowsEnv() {
     char msg[] = "Destroying Env::Default()\n";
     fwrite(msg, 1, sizeof(msg), stderr);
     abort();
   }
+#pragma warning(default: 4722)
 
   virtual Status NewSequentialFile(const std::string& fname,
                                    SequentialFile** result) {
@@ -449,12 +451,13 @@ class WindowsEnv : public Env {
         if (NULL == map) {
           s = WindowsError(fname, ::GetLastError());
         } else {
-          void* base = ::MapViewOfFileEx(map, FILE_MAP_READ, 0, 0, size.QuadPart, NULL);
+          void* base = ::MapViewOfFileEx(map, FILE_MAP_READ, 0, 0, static_cast<SIZE_T>(size.QuadPart), NULL);
           if (NULL == base) {
             s = WindowsError(fname, ::GetLastError());
             ::CloseHandle(map);
           } else {
-            *result = new WindowsMmapReadableFile(fname, fd, map, base, size.QuadPart, &mmap_limit_);
+            *result = new WindowsMmapReadableFile(fname, fd, map, base, static_cast<size_t>(size.QuadPart),
+                                                  &mmap_limit_);
           }
         }
       }
