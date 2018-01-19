@@ -9,6 +9,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef _MSC_VER
+# include <windows.h>
+#endif
+
 namespace leveldb {
 namespace test {
 
@@ -34,7 +38,17 @@ bool RegisterTest(const char* base, const char* name, void (*func)()) {
 }
 
 int RunAllTests() {
+#ifdef _MSC_VER
+  const char* matcher = nullptr;
+  DWORD len = ::GetEnvironmentVariableA("LEVELDB_TESTS", NULL, 0);
+  if (0 < len) {
+    char* buf = (char *)_alloca(len + 1);
+    ::GetEnvironmentVariableA("LEVELDB_TESTS", buf, len + 1);
+    matcher = buf;
+  }
+#else
   const char* matcher = getenv("LEVELDB_TESTS");
+#endif
 
   int num = 0;
   if (tests != NULL) {
@@ -65,7 +79,17 @@ std::string TmpDir() {
 }
 
 int RandomSeed() {
+#ifdef _MSC_VER
+  const char* env = nullptr;
+  DWORD len = ::GetEnvironmentVariableA("TEST_RANDOM_SEED", NULL, 0);
+  if (0 < len) {
+    char* buf = (char *)_alloca(len + 1);
+    ::GetEnvironmentVariableA("TEST_RANDOM_SEED", buf, len + 1);
+    env = buf;
+  }
+#else
   const char* env = getenv("TEST_RANDOM_SEED");
+#endif
   int result = (env != NULL ? atoi(env) : 301);
   if (result <= 0) {
     result = 301;
