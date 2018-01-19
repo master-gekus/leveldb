@@ -78,15 +78,13 @@ option(LEVELDB_BUILD_TESTS "Build tests" OFF)
 if (LEVELDB_BUILD_TESTS)
     enable_testing()
 
-    add_library(testharness INTERFACE)
-    set_target_properties(testharness PROPERTIES
-        INTERFACE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/util/testharness.cc
-        INTERFACE_LINK_LIBRARIES ${PROJECT_NAME}
-        )
+    add_library(testharness OBJECT
+      ${CMAKE_CURRENT_SOURCE_DIR}/util/testharness.cc
+      )
 
     macro(ADD_AUTO_TEST test_name)
-        add_executable(${ARGV})
-        target_link_libraries(${test_name} testharness)
+        add_executable(${ARGV} $<TARGET_OBJECTS:testharness>)
+        target_link_libraries(${test_name} ${PROJECT_NAME})
         add_test(NAME ${test_name} COMMAND ${test_name})
         add_custom_command(TARGET ${test_name} POST_BUILD COMMAND ${test_name})
     endmacro()
