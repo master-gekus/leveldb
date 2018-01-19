@@ -175,10 +175,11 @@ class WindowsRandomAccessFile: public RandomAccessFile {
 
     Status s;
     size_t total_read = 0;
+    char *p = scratch;
     while (n) {
       size_t to_read = std::min(n, static_cast<size_t>(std::numeric_limits<DWORD>::max()));
       DWORD read = 0;
-      if (!::ReadFile(fd, scratch, static_cast<DWORD>(to_read), &read, NULL)) {
+      if (!::ReadFile(fd, p, static_cast<DWORD>(to_read), &read, NULL)) {
         s = WindowsError(filename_, ::GetLastError());
         total_read = 0;
         break;
@@ -188,7 +189,7 @@ class WindowsRandomAccessFile: public RandomAccessFile {
         break;
       }
       n -= read;
-      scratch += read;
+      p += read;
     }
     *result = Slice(scratch, total_read);
 
