@@ -626,7 +626,10 @@ class WindowsEnv : public Env {
     } else {
       char buf[MAX_PATH + 31];
       len = ::GetTempPathA(sizeof(buf) - 1, buf);
-      sprintf_s(buf + len, sizeof(buf) - len, "/tmp/leveldbtest-%u",
+      if ((0 < len) && (('\\' == buf[len-1]) || ('//' == buf[len-1]))) {
+        buf[--len] = '\0';
+      }
+      sprintf_s(buf + len, sizeof(buf) - len, "/leveldbtest-%u",
                 static_cast<unsigned int>(::GetCurrentThreadId()));
       *result = buf;
     }

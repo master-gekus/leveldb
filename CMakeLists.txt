@@ -91,6 +91,7 @@ if (LEVELDB_BUILD_TESTS)
 
     ADD_AUTO_TEST(memenv_test helpers/memenv/memenv_test.cc)
     ADD_AUTO_TEST(c_test db/c_test.c)
+    ADD_AUTO_TEST(env_posix_test util/env_posix_test.cc)
 
 endif(LEVELDB_BUILD_TESTS)
 
