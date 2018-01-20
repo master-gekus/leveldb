@@ -95,17 +95,10 @@ if (LEVELDB_BUILD_TESTS)
 
     ADD_AUTO_TEST(c_test                db/c_test.c)
 
-    # Hungs-up on ReadAll
-    # ADD_AUTO_TEST(autocompact_test      db/autocompact_test.cc)
-
     # fails TableFileRepair
     #ADD_AUTO_TEST(corruption_test       db/corruption_test.cc)
 
     ADD_AUTO_TEST(dbformat_test         db/dbformat_test.cc)
-
-    # BloomFilter FAILED on Windows 32-bit build
-    ADD_AUTO_TEST(db_test               db/db_test.cc)
-
     ADD_AUTO_TEST(fault_injection_test  db/fault_injection_test.cc)
     ADD_AUTO_TEST(filename_test         db/filename_test.cc)
     ADD_AUTO_TEST(log_test              db/log_test.cc)
@@ -129,5 +122,14 @@ if (LEVELDB_BUILD_TESTS)
     ADD_AUTO_TEST(env_posix_test    util/env_posix_test.cc)
     ADD_AUTO_TEST(hash_test         util/hash_test.cc)
 
+    if(NOT "${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
+      # Tests which fail on Windows MSVC 32-bit build
+
+      # FAILED BloomFilter
+      ADD_AUTO_TEST(db_test               db/db_test.cc)
+
+      # FAILED ReadHalf
+      ADD_AUTO_TEST(autocompact_test      db/autocompact_test.cc)
+    endif()
 endif(LEVELDB_BUILD_TESTS)
 
