@@ -128,11 +128,7 @@ if (LEVELDB_BUILD_TESTS)
     ADD_AUTO_TEST(cache_test        util/cache_test.cc)
     ADD_AUTO_TEST(coding_test       util/coding_test.cc)
     ADD_AUTO_TEST(crc32c_test       util/crc32c_test.cc)
-
-    # fails on ReopenWritableFile
-    # work too slow with threads - check!
-    # ADD_AUTO_TEST(env_test          util/env_test.cc)
-
+    ADD_AUTO_TEST(env_test          util/env_test.cc)
     ADD_AUTO_TEST(env_posix_test    util/env_posix_test.cc)
     ADD_AUTO_TEST(hash_test         util/hash_test.cc)
 

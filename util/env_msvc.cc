@@ -474,7 +474,7 @@ class WindowsEnv : public Env {
   virtual Status NewWritableFile(const std::string& fname,
                                  WritableFile** result) {
     HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
-                              OPEN_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
+                              CREATE_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       *result = NULL;
       return WindowsError(fname, ::GetLastError());
@@ -661,7 +661,7 @@ class WindowsEnv : public Env {
   }
 
   virtual void SleepForMicroseconds(int micros) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(micros));
+    std::this_thread::sleep_for(std::chrono::microseconds(micros));
   }
 
  private:
