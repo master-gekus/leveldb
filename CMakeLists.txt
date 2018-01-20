@@ -103,8 +103,8 @@ if (LEVELDB_BUILD_TESTS)
 
     ADD_AUTO_TEST(dbformat_test         db/dbformat_test.cc)
 
-    # Hungs-up on GetEncountersEmptyLevel
-    # ADD_AUTO_TEST(db_test               db/db_test.cc)
+    # BloomFilter FAILED on Windows 32-bit build
+    ADD_AUTO_TEST(db_test               db/db_test.cc)
 
     ADD_AUTO_TEST(fault_injection_test  db/fault_injection_test.cc)
     ADD_AUTO_TEST(filename_test         db/filename_test.cc)

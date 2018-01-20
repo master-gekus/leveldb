@@ -523,9 +523,7 @@ class WindowsEnv : public Env {
     }
 
     do {
-      if (0 == (d.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-        result->push_back(d.cFileName);
-      }
+      result->push_back(d.cFileName);
     } while(::FindNextFileA(h, &d));
 
     ::FindClose(h);
