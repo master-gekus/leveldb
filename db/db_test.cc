@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "leveldb/db.h"
 #include "leveldb/filter_policy.h"
 #include "db/db_impl.h"
@@ -436,7 +440,7 @@ class DBTest {
   // Return spread of files per level
   std::string FilesPerLevel() {
     std::string result;
-    int last_non_zero_offset = 0;
+    size_t last_non_zero_offset = 0;
     for (int level = 0; level < config::kNumLevels; level++) {
       int f = NumTableFilesAtLevel(level);
       char buf[100];
@@ -1050,7 +1054,7 @@ TEST(DBTest, RepeatedWritesToSameKey) {
   const int kMaxFiles = config::kNumLevels + config::kL0_StopWritesTrigger;
 
   Random rnd(301);
-  std::string value = RandomString(&rnd, 2 * options.write_buffer_size);
+  std::string value = RandomString(&rnd, static_cast<int>(2 * options.write_buffer_size));
   for (int i = 0; i < 5 * kMaxFiles; i++) {
     Put("key", value);
     ASSERT_LE(TotalTableFiles(), kMaxFiles);
@@ -2209,8 +2213,8 @@ void BM_LogAndApply(int iters, int num_base_files) {
   VersionEdit vbase;
   uint64_t fnum = 1;
   for (int i = 0; i < num_base_files; i++) {
-    InternalKey start(MakeKey(2*fnum), 1, kTypeValue);
-    InternalKey limit(MakeKey(2*fnum+1), 1, kTypeDeletion);
+    InternalKey start(MakeKey(static_cast<int>(2*fnum)), 1, kTypeValue);
+    InternalKey limit(MakeKey(static_cast<int>(2*fnum+1)), 1, kTypeDeletion);
     vbase.AddFile(2, fnum++, 1 /* file size */, start, limit);
   }
   ASSERT_OK(vset.LogAndApply(&vbase, &mu));
@@ -2220,13 +2224,13 @@ void BM_LogAndApply(int iters, int num_base_files) {
   for (int i = 0; i < iters; i++) {
     VersionEdit vedit;
     vedit.DeleteFile(2, fnum);
-    InternalKey start(MakeKey(2*fnum), 1, kTypeValue);
-    InternalKey limit(MakeKey(2*fnum+1), 1, kTypeDeletion);
+    InternalKey start(MakeKey(static_cast<int>(2*fnum)), 1, kTypeValue);
+    InternalKey limit(MakeKey(static_cast<int>(2*fnum+1)), 1, kTypeDeletion);
     vedit.AddFile(2, fnum++, 1 /* file size */, start, limit);
     vset.LogAndApply(&vedit, &mu);
   }
   uint64_t stop_micros = env->NowMicros();
-  unsigned int us = stop_micros - start_micros;
+  unsigned int us = static_cast<unsigned int>(stop_micros - start_micros);
   char buf[16];
   snprintf(buf, sizeof(buf), "%d", num_base_files);
   fprintf(stderr,

@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "leveldb/db.h"
 
 #include <errno.h>
@@ -86,7 +90,7 @@ class CorruptionTest {
   }
 
   void Check(int min_expected, int max_expected) {
-    int next_expected = 0;
+    uint64_t next_expected = 0;
     int missed = 0;
     int bad_keys = 0;
     int bad_values = 0;
@@ -106,9 +110,9 @@ class CorruptionTest {
         bad_keys++;
         continue;
       }
-      missed += (key - next_expected);
+      missed += static_cast<int>(key - next_expected);
       next_expected = key + 1;
-      if (iter->value() != Value(key, &value_space)) {
+      if (iter->value() != Value(static_cast<int>(key), &value_space)) {
         bad_values++;
       } else {
         correct++;
@@ -136,7 +140,7 @@ class CorruptionTest {
           type == filetype &&
           int(number) > picked_number) {  // Pick latest file
         fname = dbname_ + "/" + filenames[i];
-        picked_number = number;
+        picked_number = static_cast<int>(number);
       }
     }
     ASSERT_TRUE(!fname.empty()) << filetype;
@@ -219,7 +223,7 @@ TEST(CorruptionTest, RecoverWriteError) {
 TEST(CorruptionTest, NewFileErrorDuringWrite) {
   // Do enough writing to force minor compaction
   env_.writable_file_error_ = true;
-  const int num = 3 + (Options().write_buffer_size / kValueSize);
+  const int num = 3 + static_cast<int>(Options().write_buffer_size / kValueSize);
   std::string value_storage;
   Status s;
   for (int i = 0; s.ok() && i < num; i++) {

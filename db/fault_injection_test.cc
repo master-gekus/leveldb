@@ -57,9 +57,9 @@ Status Truncate(const std::string& filename, uint64_t length) {
   if (!s.ok())
     return s;
 
-  char* scratch = new char[length];
+  char* scratch = new char[static_cast<size_t>(length)];
   leveldb::Slice result;
-  s = orig_file->Read(length, &result, scratch);
+  s = orig_file->Read(static_cast<size_t>(length), &result, scratch);
   delete orig_file;
   if (s.ok()) {
     std::string tmp_name = GetDirName(filename) + "/truncate.tmp";

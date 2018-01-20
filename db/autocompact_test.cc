@@ -91,7 +91,7 @@ void AutoCompactTest::DoReads(int n) {
     uint64_t size = Size(Key(0), Key(n));
     fprintf(stderr, "iter %3d => %7.3f MB [other %7.3f MB]\n",
             read+1, size/1048576.0, Size(Key(n), Key(kCount))/1048576.0);
-    if (size <= initial_size/10) {
+    if (size <= static_cast<uint64_t>(initial_size/10)) {
       break;
     }
   }

@@ -21,7 +21,7 @@ static int DecodeKey(const Slice& k) {
   return DecodeFixed32(k.data());
 }
 static void* EncodeValue(uintptr_t v) { return reinterpret_cast<void*>(v); }
-static int DecodeValue(void* v) { return reinterpret_cast<uintptr_t>(v); }
+static int DecodeValue(void* v) { return static_cast<int>(reinterpret_cast<uintptr_t>(v)); }
 
 class CacheTest {
  public:
@@ -164,11 +164,11 @@ TEST(CacheTest, UseExceedsCacheSize) {
   }
 
   // Check that all the entries can be found in the cache.
-  for (int i = 0; i < h.size(); i++) {
-    ASSERT_EQ(2000+i, Lookup(1000+i));
+  for (size_t i = 0; i < h.size(); i++) {
+    ASSERT_EQ(2000+i, Lookup(static_cast<int>(1000+i)));
   }
 
-  for (int i = 0; i < h.size(); i++) {
+  for (size_t i = 0; i < h.size(); i++) {
     cache_->Release(h[i]);
   }
 }
@@ -211,7 +211,7 @@ TEST(CacheTest, Prune) {
   Insert(2, 200);
 
   Cache::Handle* handle = cache_->Lookup(EncodeKey(1));
-  ASSERT_TRUE(handle);
+  ASSERT_TRUE(nullptr != handle);
   cache_->Prune();
   cache_->Release(handle);
 

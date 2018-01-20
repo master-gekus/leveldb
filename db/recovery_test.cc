@@ -127,11 +127,11 @@ class RecoveryTest {
   }
 
   int NumLogs() {
-    return GetFiles(kLogFile).size();
+    return static_cast<int>(GetFiles(kLogFile).size());
   }
 
   int NumTables() {
-    return GetFiles(kTableFile).size();
+    return static_cast<int>(GetFiles(kTableFile).size());
   }
 
   uint64_t FileSize(const std::string& fname) {

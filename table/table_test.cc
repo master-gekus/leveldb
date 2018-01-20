@@ -123,9 +123,9 @@ class StringSource: public RandomAccessFile {
       return Status::InvalidArgument("invalid Read offset");
     }
     if (offset + n > contents_.size()) {
-      n = contents_.size() - offset;
+      n = static_cast<size_t>(contents_.size() - offset);
     }
-    memcpy(scratch, &contents_[offset], n);
+    memcpy(scratch, &contents_[static_cast<size_t>(offset)], n);
     *result = Slice(scratch, n);
     return Status::OK();
   }
@@ -613,7 +613,7 @@ class Harness {
     if (keys.empty()) {
       return "foo";
     } else {
-      const int index = rnd->Uniform(keys.size());
+      const int index = rnd->Uniform(static_cast<int>(keys.size()));
       std::string result = keys[index];
       switch (rnd->Uniform(3)) {
         case 0:

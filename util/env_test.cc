@@ -64,14 +64,14 @@ TEST(EnvTest, ReadWrite) {
   std::string read_result;
   std::string scratch;
   while (read_result.size() < data.size()) {
-    int len = std::min<int>(rnd.Skewed(18), data.size() - read_result.size());
+    int len = std::min<int>(rnd.Skewed(18), static_cast<int>(data.size() - read_result.size()));
     scratch.resize(std::max(len, 1));  // at least 1 so &scratch[0] is legal
     Slice read;
     ASSERT_OK(sequential_file->Read(len, &read, &scratch[0]));
     if (len > 0) {
-      ASSERT_GT(read.size(), 0);
+      ASSERT_GT(read.size(), static_cast<size_t>(0));
     }
-    ASSERT_LE(read.size(), len);
+    ASSERT_LE(read.size(), static_cast<size_t>(len));
     read_result.append(read.data(), read.size());
   }
   ASSERT_EQ(read_result, data);

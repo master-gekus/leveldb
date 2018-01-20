@@ -82,7 +82,7 @@ class LogTest {
         return Status::NotFound("in-memory file skipped past end");
       }
 
-      contents_.remove_prefix(n);
+      contents_.remove_prefix(static_cast<size_t>(n));
 
       return Status::OK();
     }
@@ -521,8 +521,8 @@ TEST(LogTest, ErrorJoinsRecords) {
   ASSERT_EQ("correct", Read());
   ASSERT_EQ("EOF", Read());
   const size_t dropped = DroppedBytes();
-  ASSERT_LE(dropped, 2*kBlockSize + 100);
-  ASSERT_GE(dropped, 2*kBlockSize);
+  ASSERT_LE(dropped, static_cast<size_t>(2*kBlockSize + 100));
+  ASSERT_GE(dropped, static_cast<size_t>(2*kBlockSize));
 }
 
 TEST(LogTest, ReadStart) {
