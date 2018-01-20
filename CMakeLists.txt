@@ -74,6 +74,7 @@ add_library(${PROJECT_NAME} STATIC
 target_link_libraries(${PROJECT_NAME} memenv)
 
 option(LEVELDB_BUILD_TESTS "Build tests" OFF)
+option(LEVELDB_AUTORUN_TESTS "Run test after build" OFF)
 
 if (LEVELDB_BUILD_TESTS)
     enable_testing()
@@ -87,7 +88,9 @@ if (LEVELDB_BUILD_TESTS)
         add_executable(${ARGV} $<TARGET_OBJECTS:testharness>)
         target_link_libraries(${test_name} ${PROJECT_NAME})
         add_test(NAME ${test_name} COMMAND ${test_name})
-        add_custom_command(TARGET ${test_name} POST_BUILD COMMAND ${test_name})
+        if (LEVELDB_AUTORUN_TESTS)
+          add_custom_command(TARGET ${test_name} POST_BUILD COMMAND ${test_name})
+        endif(LEVELDB_AUTORUN_TESTS)
     endmacro()
 
     ADD_AUTO_TEST(c_test                db/c_test.c)
