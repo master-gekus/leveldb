@@ -473,8 +473,8 @@ class WindowsEnv : public Env {
 
   virtual Status NewWritableFile(const std::string& fname,
                                  WritableFile** result) {
-    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS,
-                              FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                              OPEN_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       *result = NULL;
       return WindowsError(fname, ::GetLastError());
@@ -486,8 +486,8 @@ class WindowsEnv : public Env {
 
   virtual Status NewAppendableFile(const std::string& fname,
                                    WritableFile** result) {
-    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS,
-                              FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                              OPEN_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       *result = NULL;
       return WindowsError(fname, ::GetLastError());
@@ -581,8 +581,8 @@ class WindowsEnv : public Env {
   virtual Status LockFile(const std::string& fname, FileLock** lock) {
     *lock = NULL;
     Status result;
-    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, OPEN_ALWAYS,
-                              FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                              OPEN_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       result = WindowsError(fname, ::GetLastError());
     } else if (!locks_.Insert(fname)) {
