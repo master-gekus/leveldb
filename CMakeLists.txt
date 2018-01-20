@@ -80,6 +80,7 @@ if (LEVELDB_BUILD_TESTS)
 
     add_library(testharness OBJECT
       ${CMAKE_CURRENT_SOURCE_DIR}/util/testharness.cc
+      ${CMAKE_CURRENT_SOURCE_DIR}/util/testutil.cc
       )
 
     macro(ADD_AUTO_TEST test_name)
@@ -89,9 +90,33 @@ if (LEVELDB_BUILD_TESTS)
         add_custom_command(TARGET ${test_name} POST_BUILD COMMAND ${test_name})
     endmacro()
 
+    ADD_AUTO_TEST(c_test                db/c_test.c)
+    ADD_AUTO_TEST(autocompact_test      db/autocompact_test.cc)
+    ADD_AUTO_TEST(corruption_test       db/corruption_test.cc)
+    ADD_AUTO_TEST(dbformat_test         db/dbformat_test.cc)
+    ADD_AUTO_TEST(db_test               db/db_test.cc)
+    ADD_AUTO_TEST(fault_injection_test  db/fault_injection_test.cc)
+    ADD_AUTO_TEST(filename_test         db/filename_test.cc)
+    ADD_AUTO_TEST(log_test              db/log_test.cc)
+    ADD_AUTO_TEST(recovery_test         db/recovery_test.cc)
+    ADD_AUTO_TEST(skiplist_test         db/skiplist_test.cc)
+    ADD_AUTO_TEST(version_edit_test     db/version_edit_test.cc)
+    ADD_AUTO_TEST(version_set_test      db/version_set_test.cc)
+    ADD_AUTO_TEST(write_batch_test      db/write_batch_test.cc)
+
     ADD_AUTO_TEST(memenv_test helpers/memenv/memenv_test.cc)
-    ADD_AUTO_TEST(c_test db/c_test.c)
-    ADD_AUTO_TEST(env_posix_test util/env_posix_test.cc)
+
+    ADD_AUTO_TEST(filter_block_test     table/filter_block_test.cc)
+    ADD_AUTO_TEST(table_test            table/table_test.cc)
+
+    ADD_AUTO_TEST(arena_test        util/arena_test.cc)
+    ADD_AUTO_TEST(bloom_test        util/bloom_test.cc)
+    ADD_AUTO_TEST(cache_test        util/cache_test.cc)
+    ADD_AUTO_TEST(coding_test       util/coding_test.cc)
+    ADD_AUTO_TEST(crc32c_test       util/crc32c_test.cc)
+    ADD_AUTO_TEST(env_test          util/env_test.cc)
+    ADD_AUTO_TEST(env_posix_test    util/env_posix_test.cc)
+    ADD_AUTO_TEST(hash_test         util/hash_test.cc)
 
 endif(LEVELDB_BUILD_TESTS)
 
