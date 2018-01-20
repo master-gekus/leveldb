@@ -161,7 +161,7 @@ class WindowsRandomAccessFile: public RandomAccessFile {
     HANDLE fd = fd_;
     LARGE_INTEGER pos, savePos;
     if (temporary_fd_) {
-      fd = ::CreateFileA(filename_.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
+      fd = ::CreateFileA(filename_.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING,
                          0, NULL);
       if (INVALID_HANDLE_VALUE == fd) {
         return WindowsError(filename_, ::GetLastError());
@@ -317,7 +317,7 @@ class WindowsWritableFile : public WritableFile {
     Status s;
     if (basename.starts_with("MANIFEST")) {
       ::FlushFileBuffers(fd_);
-      HANDLE fd = ::CreateFileA(dir.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+      HANDLE fd = ::CreateFileA(dir.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
                                 OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
       if (INVALID_HANDLE_VALUE == fd) {
         s = WindowsError(dir, ::GetLastError());
@@ -423,7 +423,7 @@ class WindowsEnv : public Env {
 
   virtual Status NewSequentialFile(const std::string& fname,
                                    SequentialFile** result) {
-    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
+    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING,
                               0, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       *result = NULL;
@@ -438,7 +438,7 @@ class WindowsEnv : public Env {
                                      RandomAccessFile** result) {
     *result = NULL;
     Status s;
-    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
+    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING,
                               0, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       s = WindowsError(fname, ::GetLastError());
@@ -473,7 +473,7 @@ class WindowsEnv : public Env {
 
   virtual Status NewWritableFile(const std::string& fname,
                                  WritableFile** result) {
-    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
                               CREATE_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       *result = NULL;
@@ -486,7 +486,7 @@ class WindowsEnv : public Env {
 
   virtual Status NewAppendableFile(const std::string& fname,
                                    WritableFile** result) {
-    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
                               OPEN_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       *result = NULL;
@@ -581,7 +581,7 @@ class WindowsEnv : public Env {
   virtual Status LockFile(const std::string& fname, FileLock** lock) {
     *lock = NULL;
     Status result;
-    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+    HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
                               OPEN_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       result = WindowsError(fname, ::GetLastError());

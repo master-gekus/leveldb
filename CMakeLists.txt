@@ -109,10 +109,7 @@ if (LEVELDB_BUILD_TESTS)
     ADD_AUTO_TEST(fault_injection_test  db/fault_injection_test.cc)
     ADD_AUTO_TEST(filename_test         db/filename_test.cc)
     ADD_AUTO_TEST(log_test              db/log_test.cc)
-
-    # fails NoLogFiles
-    # ADD_AUTO_TEST(recovery_test         db/recovery_test.cc)
-
+    ADD_AUTO_TEST(recovery_test         db/recovery_test.cc)
     ADD_AUTO_TEST(skiplist_test         db/skiplist_test.cc)
     ADD_AUTO_TEST(version_edit_test     db/version_edit_test.cc)
     ADD_AUTO_TEST(version_set_test      db/version_set_test.cc)
