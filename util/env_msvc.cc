@@ -291,6 +291,7 @@ class WindowsWritableFile : public WritableFile {
 
   virtual Status Close() {
     Status result = FlushBuffered();
+    ::SetEndOfFile(fd_);
     if ((!::CloseHandle(fd_)) && result.ok()) {
       result = WindowsError(filename_, ::GetLastError());
     }
@@ -474,7 +475,7 @@ class WindowsEnv : public Env {
   virtual Status NewWritableFile(const std::string& fname,
                                  WritableFile** result) {
     HANDLE fd = ::CreateFileA(fname.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
-                              CREATE_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
+                              OPEN_ALWAYS, FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == fd) {
       *result = NULL;
       return WindowsError(fname, ::GetLastError());

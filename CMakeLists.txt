@@ -94,10 +94,7 @@ if (LEVELDB_BUILD_TESTS)
     endmacro()
 
     ADD_AUTO_TEST(c_test                db/c_test.c)
-
-    # fails TableFileRepair
-    #ADD_AUTO_TEST(corruption_test       db/corruption_test.cc)
-
+    ADD_AUTO_TEST(corruption_test       db/corruption_test.cc)
     ADD_AUTO_TEST(dbformat_test         db/dbformat_test.cc)
     ADD_AUTO_TEST(fault_injection_test  db/fault_injection_test.cc)
     ADD_AUTO_TEST(filename_test         db/filename_test.cc)
