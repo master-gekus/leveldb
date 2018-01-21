@@ -24,6 +24,10 @@ else(MSVC)
         )
 endif(MSVC)
 
+if(TARGET snappy)
+  set(HAVE_SNAPPY 1)
+endif()
+
 include_directories(./ include)
 
 add_library(memenv STATIC
@@ -72,6 +76,10 @@ add_library(${PROJECT_NAME} STATIC
     ${LEVELDB_PORT_SOURCES}
     )
 target_link_libraries(${PROJECT_NAME} memenv)
+if(HAVE_SNAPPY)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE -DHAVE_SNAPPY)
+  target_link_libraries(${PROJECT_NAME} snappy)
+endif(HAVE_SNAPPY)
 
 option(LEVELDB_BUILD_TESTS "Build tests" OFF)
 option(LEVELDB_AUTORUN_TESTS "Run test after build" OFF)
