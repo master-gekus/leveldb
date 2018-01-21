@@ -14,6 +14,10 @@
 #include <mutex>
 #include <atomic>
 
+#ifdef HAVE_SNAPPY
+#include <snappy.h>
+#endif  // defined(HAVE_SNAPPY)
+
 namespace leveldb {
 namespace port {
 
@@ -121,34 +125,56 @@ public:
 };
 
 // ------------------ Compression -------------------
+inline bool Snappy_Compress(const char* input, size_t length,
+                            ::std::string* output) {
+#ifdef HAVE_SNAPPY
+  output->resize(snappy::MaxCompressedLength(length));
+  size_t outlen;
+  snappy::RawCompress(input, length, &(*output)[0], &outlen);
+  output->resize(outlen);
+  return true;
+#else  // defined(HAVE_SNAPPY)
+  ((void)input);
+  ((void)length);
+  ((void)output);
+#endif  // defined(HAVE_SNAPPY)
 
-// Store the snappy compression of "input[0,input_length-1]" in *output.
-// Returns false if snappy is not supported by this port.
-extern bool Snappy_Compress(const char* input, size_t input_length,
-                            std::string* output);
+  return false;
+}
 
-// If input[0,input_length-1] looks like a valid snappy compressed
-// buffer, store the size of the uncompressed data in *result and
-// return true.  Else return false.
-extern bool Snappy_GetUncompressedLength(const char* input, size_t length,
-                                         size_t* result);
+inline bool Snappy_GetUncompressedLength(const char* input, size_t length,
+                                         size_t* result) {
+#ifdef HAVE_SNAPPY
+  return snappy::GetUncompressedLength(input, length, result);
+#else
+  ((void)input);
+  ((void)length);
+  ((void)result);
+  return false;
+#endif  // defined(HAVE_SNAPPY)
+}
 
-// Attempt to snappy uncompress input[0,input_length-1] into *output.
-// Returns true if successful, false if the input is invalid lightweight
-// compressed data.
-//
-// REQUIRES: at least the first "n" bytes of output[] must be writable
-// where "n" is the result of a successful call to
-// Snappy_GetUncompressedLength.
-extern bool Snappy_Uncompress(const char* input_data, size_t input_length,
-                              char* output);
+inline bool Snappy_Uncompress(const char* input, size_t length,
+                              char* output) {
+#ifdef HAVE_SNAPPY
+  return snappy::RawUncompress(input, length, output);
+#else
+  ((void)input);
+  ((void)length);
+  ((void)output);
+  return false;
+#endif  // defined(HAVE_SNAPPY)
+}
 
 // ------------------ Miscellaneous -------------------
 
 // If heap profiling is not supported, returns false.
 // Else repeatedly calls (*func)(arg, data, n) and then returns true.
 // The concatenation of all "data[0,n-1]" fragments is the heap profile.
-extern bool GetHeapProfile(void (*func)(void*, const char*, int), void* arg);
+inline bool GetHeapProfile(void (* /*func*/)(void*, const char*, int), void* /*arg*/)
+{
+  return false;
+}
 
 // Extend the CRC to include the first n bytes of buf.
 //

@@ -46,25 +46,6 @@ void CondVar::SignalAll() {
   ::WakeAllConditionVariable(static_cast<CONDITION_VARIABLE*>(cv_));
 }
 
-bool Snappy_Compress(const char* /*input*/, size_t /*input_length*/,
-                     std::string* /*output*/) {
-  return false;
-}
-
-bool Snappy_GetUncompressedLength(const char* /*input*/, size_t /*length*/,
-                                  size_t* /*result*/) {
-  return false;
-}
-
-bool Snappy_Uncompress(const char* /*input_data*/, size_t /*input_length*/,
-                       char* /*output*/) {
-  return false;
-}
-
-bool GetHeapProfile(void (* /*func*/)(void*, const char*, int), void* /*arg*/) {
-  return false;
-}
-
 uint32_t AcceleratedCRC32C(uint32_t /*crc*/, const char* /*buf*/, size_t /*size*/) {
   return 0;
 }
