@@ -81,6 +81,9 @@ if(HAVE_SNAPPY)
   target_link_libraries(${PROJECT_NAME} snappy)
 endif(HAVE_SNAPPY)
 
+target_include_directories(${PROJECT_NAME} INTERFACE
+  ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 option(LEVELDB_BUILD_TESTS "Build tests" OFF)
 option(LEVELDB_AUTORUN_TESTS "Run test after build" OFF)
 
