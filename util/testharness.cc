@@ -89,6 +89,7 @@ int RandomSeed() {
   }
 #else
   const char* env = getenv("TEST_RANDOM_SEED");
+#endif
   int result = (env != nullptr ? atoi(env) : 301);
   if (result <= 0) {
     result = 301;
