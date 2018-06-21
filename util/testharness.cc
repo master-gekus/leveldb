@@ -11,6 +11,10 @@
 #include <string>
 #include <vector>
 
+#ifdef _MSC_VER
+#include <Windows.h>
+#endif
+
 #include "leveldb/env.h"
 
 namespace leveldb {

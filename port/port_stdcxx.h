@@ -137,4 +137,8 @@ inline uint32_t AcceleratedCRC32C(uint32_t crc, const char* buf, size_t size) {
 }  // namespace port
 }  // namespace leveldb
 
+#ifdef _MSC_VER
+typedef std::make_signed<size_t>::type ssize_t;
+#endif
+
 #endif  // STORAGE_LEVELDB_PORT_PORT_STDCXX_H_

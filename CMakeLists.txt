@@ -173,11 +173,20 @@ target_sources(leveldb
 )
 
 # POSIX code is specified separately so we can leave it out in the future.
-target_sources(leveldb
-  PRIVATE
-    "${PROJECT_SOURCE_DIR}/util/env_posix.cc"
-    "${PROJECT_SOURCE_DIR}/util/posix_logger.h"
-)
+if(NOT WIN32)
+  target_sources(leveldb
+    PRIVATE
+      "${PROJECT_SOURCE_DIR}/util/env_posix.cc"
+      "${PROJECT_SOURCE_DIR}/util/posix_logger.h"
+  )
+else(NOT WIN32)
+  target_sources(leveldb
+    PRIVATE
+      "${PROJECT_SOURCE_DIR}/util/env_msvc.cc"
+      "${PROJECT_SOURCE_DIR}/util/posix_logger.h"
+  )
+  target_include_directories(leveldb PRIVATE "${PROJECT_SOURCE_DIR}/port/win")
+endif(NOT WIN32)
 
 # MemEnv is not part of the interface and could be pulled to a separate library.
 target_sources(leveldb
