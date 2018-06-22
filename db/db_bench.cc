@@ -81,15 +81,15 @@ static bool FLAGS_histogram = false;
 
 // Number of bytes to buffer in memtable before compacting
 // (initialized to default value by "main")
-static int FLAGS_write_buffer_size = 0;
+static size_t FLAGS_write_buffer_size = 0;
 
 // Number of bytes written to each file.
 // (initialized to default value by "main")
-static int FLAGS_max_file_size = 0;
+static size_t FLAGS_max_file_size = 0;
 
 // Approximate size of user data packed per block (before compression.
 // (initialized to default value by "main")
-static int FLAGS_block_size = 0;
+static size_t FLAGS_block_size = 0;
 
 // Number of bytes to use as a cache of uncompressed data.
 // Negative means use default settings.
@@ -122,7 +122,7 @@ leveldb::Env* g_env = nullptr;
 class RandomGenerator {
  private:
   std::string data_;
-  int pos_;
+  size_t pos_;
 
  public:
   RandomGenerator() {
@@ -194,7 +194,7 @@ class Stats {
     done_ = 0;
     bytes_ = 0;
     seconds_ = 0;
-    start_ = g_env->NowMicros();
+    start_ = static_cast<double>(g_env->NowMicros());
     finish_ = start_;
     message_.clear();
   }
@@ -212,7 +212,7 @@ class Stats {
   }
 
   void Stop() {
-    finish_ = g_env->NowMicros();
+    finish_ = static_cast<double>(g_env->NowMicros());
     seconds_ = (finish_ - start_) * 1e-6;
   }
 
@@ -222,7 +222,7 @@ class Stats {
 
   void FinishedSingleOp() {
     if (FLAGS_histogram) {
-      double now = g_env->NowMicros();
+      double now = static_cast<double>(g_env->NowMicros());
       double micros = now - last_op_finish_;
       hist_.Add(micros);
       if (micros > 20000) {
@@ -966,13 +966,13 @@ int main(int argc, char** argv) {
       FLAGS_compression_ratio = d;
     } else if (sscanf(argv[i], "--histogram=%d%c", &n, &junk) == 1 &&
                (n == 0 || n == 1)) {
-      FLAGS_histogram = n;
+      FLAGS_histogram = (0 != n);
     } else if (sscanf(argv[i], "--use_existing_db=%d%c", &n, &junk) == 1 &&
                (n == 0 || n == 1)) {
-      FLAGS_use_existing_db = n;
+      FLAGS_use_existing_db = (0 != n);
     } else if (sscanf(argv[i], "--reuse_logs=%d%c", &n, &junk) == 1 &&
                (n == 0 || n == 1)) {
-      FLAGS_reuse_logs = n;
+      FLAGS_reuse_logs = (0 != n);
     } else if (sscanf(argv[i], "--num=%d%c", &n, &junk) == 1) {
       FLAGS_num = n;
     } else if (sscanf(argv[i], "--reads=%d%c", &n, &junk) == 1) {

@@ -31,7 +31,6 @@ check_library_exists(snappy snappy_compress "" HAVE_SNAPPY)
 check_library_exists(tcmalloc malloc "" HAVE_TCMALLOC)
 
 if (NOT HAVE_SNAPPY AND TARGET snappy)
-  message("Using CMAKE SNAPPY!")
   set(HAVE_SNAPPY 1)
 endif()
 
@@ -353,6 +352,12 @@ if(LEVELDB_BUILD_BENCHMARKS)
           LEVELDB_HAS_PORT_CONFIG_H=1
       )
     endif(NOT HAVE_CXX17_HAS_INCLUDE)
+    if(WIN32)
+      target_compile_definitions("${bench_target_name}"
+        PRIVATE
+          _CRT_SECURE_NO_WARNINGS
+      )
+    endif()
   endfunction(leveldb_benchmark)
 
   if(NOT BUILD_SHARED_LIBS)
